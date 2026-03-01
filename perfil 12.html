@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Avaliação - Safety, Quality, Costs, Delivery</title>
+    <title>Perfil de Avaliação - David</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
     <script>
-        const firebaseConfig = {
+        // Configuração do Firebase 
+        firebase.initializeApp({
             apiKey: "AIzaSyD_tJfqaCSvanVu0Rmr7qD2fAasEVwelOw",
             authDomain: "sistema-de-metas-f0fea.firebaseapp.com",
             projectId: "sistema-de-metas-f0fea",
             storageBucket: "sistema-de-metas-f0fea.firebasestorage.app",
             messagingSenderId: "316922806030",
             appId: "1:316922806030:web:25cad5c80de9a4acba215f"
-        };
+        });
 
-        firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
         auth.onAuthStateChanged((user) => {
@@ -123,15 +123,13 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid #2a5298;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin-right: 25px;
-        }
-
-        .profile-picture img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
         }
 
         .profile-info h2 {
@@ -515,10 +513,10 @@
 
         <div class="profile-card">
             <div class="profile-picture">
-                <!--<img src="" alt="Perfil">-->
+                <i class="fas fa-user-tie"></i>
             </div>
             <div class="profile-info">
-                <h2>David</h2>
+                <h2>David </h2>
                 <p>Especialista de manutenção</p>
                 <div class="stats-bar">
                     <div class="stat-item"><i class="fas fa-shield-alt"></i> Safety: 5 KPIs</div>
@@ -835,14 +833,12 @@
             });
         }
 
-        // Função de filtro por categoria (CORRIGIDA)
+        // Função de filtro por categoria
         function filterByCategory(categoria) {
-            // Atualizar botões ativos
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // Encontrar o botão clicado e ativá-lo
             const botoes = document.querySelectorAll('.filter-btn');
             botoes.forEach(btn => {
                 if (btn.classList.contains(categoria) || (categoria === 'all' && btn.classList.contains('all'))) {
@@ -853,7 +849,6 @@
             renderizarKPIs(categoria);
         }
 
-        // Renderizar tudo ao carregar
         renderizarKPIs();
     </script>
 </body>
