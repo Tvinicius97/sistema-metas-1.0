@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Avaliação - Safety, Quality, Costs, Delivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_tJfqaCSvanVu0Rmr7qD2fAasEVwelOw",
+            authDomain: "sistema-de-metas-f0fea.firebaseapp.com",
+            projectId: "sistema-de-metas-f0fea",
+            storageBucket: "sistema-de-metas-f0fea.firebasestorage.app",
+            messagingSenderId: "316922806030",
+            appId: "1:316922806030:web:25cad5c80de9a4acba215f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function voltarParaPerfis() {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header com botão de voltar */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+            border-color: white;
+        }
+
+        .back-button i {
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.2rem;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            border-left: 5px solid #2a5298;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #2a5298;
+            margin-right: 25px;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h2 {
+            color: #1e3c72;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+
+        .profile-info p {
+            color: #718096;
+        }
+
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background-color: #f7fafc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-item i {
+            margin-right: 5px;
+            color: #2a5298;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .category-nav-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-nav-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .category-nav-item i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .category-nav-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .category-nav-item p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Safety - Verde */
+        .category-safety { background: linear-gradient(135deg, #43a047, #2e7d32); }
+        /* Quality - Azul */
+        .category-quality { background: linear-gradient(135deg, #1e88e5, #1565c0); }
+        /* Costs - Laranja */
+        .category-costs { background: linear-gradient(135deg, #fb8c00, #ef6c00); }
+        /* Delivery - Roxo */
+        .category-delivery { background: linear-gradient(135deg, #8e24aa, #6a1b9a); }
+
+        /* Control Buttons */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .control-btn.expand {
+            background: linear-gradient(135deg, #2e7d32, #43a047);
+            color: white;
+        }
+
+        .control-btn.collapse {
+            background: linear-gradient(135deg, #b71c1c, #d32f2f);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .control-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .filter-btn.all { background-color: #475569; }
+        .filter-btn.safety { background-color: #2e7d32; }
+        .filter-btn.quality { background-color: #1565c0; }
+        .filter-btn.costs { background-color: #ef6c00; }
+        .filter-btn.delivery { background-color: #6a1b9a; }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .filter-btn.active {
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px currentColor;
+        }
+
+        /* Category Sections */
+        .category-section {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid;
+        }
+
+        .category-header h2 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-header i {
+            font-size: 2rem;
+        }
+
+        .category-stats {
+            background-color: #f7fafc;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        /* KPI Card - Expansível */
+        .kpi-card {
+            background-color: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .kpi-card.collapsed {
+            max-height: 120px;
+        }
+
+        .kpi-card.expanded {
+            max-height: 350px;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-color: #2a5298;
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+
+        .kpi-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .kpi-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1rem;
+        }
+
+        .kpi-unit {
+            background-color: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #475569;
+        }
+
+        .kpi-average {
+            padding: 3px 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .kpi-preview {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .expand-icon {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .expanded .expand-icon i {
+            transform: rotate(180deg);
+        }
+
+        .monthly-notes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .collapsed .monthly-notes {
+            display: none;
+        }
+
+        .month-note {
+            background-color: white;
+            border-radius: 8px;
+            padding: 8px 3px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .month {
+            color: #64748b;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .note-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .note-value.na {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .back-button {
+                position: static;
+                transform: none;
+                margin-bottom: 20px;
+                display: inline-flex;
+                width: auto;
+            }
+            
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-picture {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .category-nav {
+                flex-direction: column;
+            }
+            
+            .category-nav-item {
+                min-width: 100%;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .monthly-notes {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .kpi-card.collapsed {
+                max-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button onclick="voltarParaPerfis()" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Voltar para Perfis</span>
+            </button>
+            <div class="header-content">
+                <h1><i class="fas fa-chart-pie"></i> Perfil de Avaliação</h1>
+                <p class="subtitle">Safety • Quality • Costs • Delivery</p>
+            </div>
+        </header>
+
+        <div class="profile-card">
+            <div class="profile-picture">
+                <!--<img src="" alt="Perfil">-->
+            </div>
+            <div class="profile-info">
+                <h2>Efrayn silva</h2>
+                <p>Assistente Administrativo</p>
+                <div class="stats-bar">
+                    <div class="stat-item"><i class="fas fa-shield-alt"></i> Safety: 5 KPIs</div>
+                    <div class="stat-item"><i class="fas fa-star"></i> Quality: 7 KPIs</div>
+                    <div class="stat-item"><i class="fas fa-coins"></i> Costs: 12 KPIs</div>
+                    <div class="stat-item"><i class="fas fa-truck"></i> Delivery: 19 KPIs</div>
+                    <div class="stat-item"><i class="fas fa-calendar"></i> 12 Meses</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegação Rápida -->
+        <div class="category-nav">
+            <div class="category-nav-item category-safety" onclick="filterByCategory('safety')">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Safety</h3>
+                <p>5 KPIs</p>
+            </div>
+            <div class="category-nav-item category-quality" onclick="filterByCategory('quality')">
+                <i class="fas fa-star"></i>
+                <h3>Quality</h3>
+                <p>7 KPIs</p>
+            </div>
+            <div class="category-nav-item category-costs" onclick="filterByCategory('costs')">
+                <i class="fas fa-coins"></i>
+                <h3>Costs</h3>
+                <p>12 KPIs</p>
+            </div>
+            <div class="category-nav-item category-delivery" onclick="filterByCategory('delivery')">
+                <i class="fas fa-truck"></i>
+                <h3>Delivery</h3>
+                <p>19 KPIs</p>
+            </div>
+        </div>
+
+        <!-- Botões de Controle - Abrir/Fechar Todos -->
+        <div class="control-buttons">
+            <button class="control-btn expand" onclick="expandAllCards()">
+                <i class="fas fa-expand-alt"></i> Abrir Todos
+            </button>
+            <button class="control-btn collapse" onclick="collapseAllCards()">
+                <i class="fas fa-compress-alt"></i> Fechar Todos
+            </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <button class="filter-btn all active" onclick="filterByCategory('all')">Todos</button>
+            <button class="filter-btn safety" onclick="filterByCategory('safety')">Safety</button>
+            <button class="filter-btn quality" onclick="filterByCategory('quality')">Quality</button>
+            <button class="filter-btn costs" onclick="filterByCategory('costs')">Costs</button>
+            <button class="filter-btn delivery" onclick="filterByCategory('delivery')">Delivery</button>
+        </div>
+
+        <!-- Container dos KPIs -->
+        <div id="kpisContainer"></div>
+    </div>
+
+    <script>
+        // Meses do ano
+        const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+        
+        const kpis = [
+            // SAFETY (5 KPIs)
+            { categoria: "Safety", kpi: "% TFR", unidade: "%", 
+              notas: ["NA", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Safety", kpi: "% TAFR", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Safety", kpi: "BICS", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Safety", kpi: "Postos Vermelhos", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Safety", kpi: "Plano de Manutenção", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+
+            // QUALITY (7 KPIs)
+            { categoria: "Quality", kpi: "IRC", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Quality", kpi: "PPM", unidade: "# ppm", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Quality", kpi: "% CTQ (CPM) / Reportáveis", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Quality", kpi: "% CTQ (CPM) / Todos", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Quality", kpi: "Retenções", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Quality", kpi: "Nota GMP", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Quality", kpi: "Micro Index Processo (Manufatura)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+
+            // COSTS (12 KPIs)
+            { categoria: "Costs", kpi: "Yield Prévia", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "GE(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "OEE(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Conversion Cost", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Produto Subsequencial", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Produto Reconstituído", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Geração de refugo(%)", unidade: "Ton", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Geração de reprocesso(%)", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Geração de sobrepeso(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Headcount(Abs)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Impacto Paradas Operacionais(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Costs", kpi: "Impacto Pequenas Paradas(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+
+            // DELIVERY (19 KPIs)
+            { categoria: "Delivery", kpi: "Impacto Quebras(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "CTS(%)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Actual Vs. IBP(Var)", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Quebras", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Nota 5S", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Compliance to Rollout MA", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "# colaboradores com +20h", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "# colaboradores sem +20h", unidade: "#", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "# total de infrações Jornada", unidade: "Min", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "# de ideias implementadas", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "MTBF", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Aderência a Win", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Aderência a Genus", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Aderência a PCD", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Hoshin Compliance", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] },
+            { categoria: "Delivery", kpi: "Index Engagement", unidade: "%", 
+              notas: ["N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"] }
+        ];
+
+        // Função para calcular média (ignora N/A)
+        function calcularMedia(notas) {
+            const notasValidas = notas.filter(nota => typeof nota === 'number' && !isNaN(nota));
+            if (notasValidas.length === 0) return "N/A";
+            const soma = notasValidas.reduce((acc, nota) => acc + nota, 0);
+            return (soma / notasValidas.length).toFixed(1);
+        }
+
+        // Função para determinar cor da média baseada na meta 6
+        function getCorMedia(media) {
+            if (media === "N/A") return "#94a3b8"; // Cinza para N/A
+            media = parseFloat(media);
+            if (media >= 6.0) return "#2e7d32"; // Verde para >= 6
+            return "#d32f2f"; // Vermelho para < 6
+        }
+
+        // Função para calcular últimas 3 notas
+        function getUltimasNotas(notas) {
+            const notasValidas = notas.filter(n => typeof n === 'number' && !isNaN(n));
+            if (notasValidas.length === 0) return "N/A";
+            const ultimas = notasValidas.slice(-3);
+            return ultimas.map(n => n.toFixed(1)).join(' → ');
+        }
+
+        // Função para renderizar KPIs
+        function renderizarKPIs(categoriaFiltro = 'all') {
+            const container = document.getElementById('kpisContainer');
+            container.innerHTML = '';
+
+            // Agrupar por categoria
+            const categorias = {};
+            kpis.forEach(kpi => {
+                if (!categorias[kpi.categoria]) {
+                    categorias[kpi.categoria] = [];
+                }
+                categorias[kpi.categoria].push(kpi);
+            });
+
+            // Ordem das categorias
+            const ordemCategorias = ['Safety', 'Quality', 'Costs', 'Delivery'];
+
+            ordemCategorias.forEach(categoria => {
+                if (categoriaFiltro !== 'all' && categoria.toLowerCase() !== categoriaFiltro) return;
+                
+                const categoriaKpis = categorias[categoria];
+                if (!categoriaKpis) return;
+
+                const corCategoria = {
+                    'Safety': '#2e7d32',
+                    'Quality': '#1565c0',
+                    'Costs': '#ef6c00',
+                    'Delivery': '#6a1b9a'
+                }[categoria];
+
+                let categoriaHtml = `
+                    <div class="category-section" id="categoria-${categoria.toLowerCase()}">
+                        <div class="category-header" style="border-bottom-color: ${corCategoria}">
+                            <h2 style="color: ${corCategoria}">
+                                <i class="fas ${{
+                                    'Safety': 'fa-shield-alt',
+                                    'Quality': 'fa-star',
+                                    'Costs': 'fa-coins',
+                                    'Delivery': 'fa-truck'
+                                }[categoria]}"></i>
+                                ${categoria}
+                            </h2>
+                            <div class="category-stats">${categoriaKpis.length} KPIs</div>
+                        </div>
+                        <div class="kpi-grid">
+                `;
+
+                categoriaKpis.forEach((kpi, index) => {
+                    const media = calcularMedia(kpi.notas);
+                    const ultimasNotas = getUltimasNotas(kpi.notas);
+                    
+                    categoriaHtml += `
+                        <div class="kpi-card collapsed" onclick="toggleCard(this)" data-card-id="${categoria}-${index}">
+                            <div class="kpi-header">
+                                <div class="kpi-title">
+                                    <span class="kpi-name">${kpi.kpi}</span>
+                                    <span class="kpi-unit">${kpi.unidade}</span>
+                                </div>
+                                <span class="kpi-average" style="background-color: ${getCorMedia(media)}">${media}</span>
+                            </div>
+                            <div class="kpi-preview">
+                                <span><i class="fas fa-history"></i> Últimas: ${ultimasNotas}</span>
+                                <span><i class="fas fa-calendar-alt"></i> 12 meses</span>
+                            </div>
+                            <div class="monthly-notes">
+                    `;
+
+                    kpi.notas.forEach((nota, idx) => {
+                        if (typeof nota === 'number' && !isNaN(nota)) {
+                            categoriaHtml += `
+                                <div class="month-note">
+                                    <div class="month">${meses[idx]}</div>
+                                    <div class="note-value">${nota.toFixed(1)}</div>
+                                </div>
+                            `;
+                        } else {
+                            categoriaHtml += `
+                                <div class="month-note">
+                                    <div class="month">${meses[idx]}</div>
+                                    <div class="note-value na">N/A</div>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    categoriaHtml += `
+                            </div>
+                            <div class="expand-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                categoriaHtml += `
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML += categoriaHtml;
+            });
+
+            // Scroll para a categoria se não for 'all'
+            if (categoriaFiltro !== 'all') {
+                setTimeout(() => {
+                    document.getElementById(`categoria-${categoriaFiltro}`)?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+
+        // Função para alternar card (abrir/fechar)
+        function toggleCard(card) {
+            if (card.classList.contains('collapsed')) {
+                card.classList.remove('collapsed');
+                card.classList.add('expanded');
+            } else {
+                card.classList.remove('expanded');
+                card.classList.add('collapsed');
+            }
+        }
+
+        // Função para abrir todos os cards
+        function expandAllCards() {
+            const cards = document.querySelectorAll('.kpi-card');
+            cards.forEach(card => {
+                card.classList.remove('collapsed');
+                card.classList.add('expanded');
+            });
+        }
+
+        // Função para fechar todos os cards
+        function collapseAllCards() {
+            const cards = document.querySelectorAll('.kpi-card');
+            cards.forEach(card => {
+                card.classList.remove('expanded');
+                card.classList.add('collapsed');
+            });
+        }
+
+        // Função de filtro por categoria (CORRIGIDA)
+        function filterByCategory(categoria) {
+            // Atualizar botões ativos
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Encontrar o botão clicado e ativá-lo
+            const botoes = document.querySelectorAll('.filter-btn');
+            botoes.forEach(btn => {
+                if (btn.classList.contains(categoria) || (categoria === 'all' && btn.classList.contains('all'))) {
+                    btn.classList.add('active');
+                }
+            });
+
+            renderizarKPIs(categoria);
+        }
+
+        // Renderizar tudo ao carregar
+        renderizarKPIs();
+    </script>
+</body>
+</html>
