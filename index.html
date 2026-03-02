@@ -485,13 +485,13 @@
                 <p>Carregando perfis...</p>
             </div>
 
-            <!-- mensagem para clicar no perfil-->
+            <!-- Mensagem para clicar no perfil -->
             <div id="restrictedMessage" class="restricted-message hidden">
                 <i class="fas fa-info-circle"></i>
                 <span>Você tem acesso apenas ao seu próprio perfil. Clique no seu card para visualizar as metas.</span>
             </div>
 
-            <!-- Grid perfs 
+            <!-- Grid de perfis-->
             <div id="profilesGrid" class="profiles-grid"></div>
 
             <div class="info-box">
@@ -500,12 +500,12 @@
                     <li><i class="fas fa-check-circle"></i> Clique em qualquer perfil para abrir</li>
                     <li><i class="fas fa-check-circle"></i> Use o botão "Sair" para voltar ao login</li>
                 </ul>
-            </div>      desativei pq não é possível que precisem desse comentário-->
+            </div>     
         </div>
     </div>
 
     <script>
-        //  CONFIGURAÇÕES DO FIREBASE
+        // CONFIGURAÇÕES DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyD_tJfqaCSvanVu0Rmr7qD2fAasEVwelOw",
             authDomain: "sistema-de-metas-f0fea.firebaseapp.com",
@@ -520,12 +520,12 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // LISTA COMPLETA DE PERFIS (lembra de atualizar a planilha pra n se perder )
+        // LISTA COMPLETA DE PERFIS
         const todosPerfis = [
             { id: 1, nome: "TELMO LIMA", funcao: "Assistente Administrativo", tipo: "assistente-adm", icone: "user-tie", setor: "Manufatura" },
             { id: 2, nome: "CLEITON PAULO", funcao: "Assistente Administrativo", tipo: "assistente-adm", icone: "user-tie", setor: "Manufatura" },
             { id: 3, nome: "EFRAYN SILVA", funcao: "Assistente Administrativo", tipo: "assistente-adm", icone: "user-tie", setor: "Manufatura" },
-            { id: 4, nome: "JEAN PIERRE", funcao: "Especialista de Processos", tipo: "especialista-processo", icone: "user-tie", setor: " Manufatura" },
+            { id: 4, nome: "JEAN PIERRE", funcao: "Especialista de Processos", tipo: "especialista-processo", icone: "user-tie", setor: "Manufatura" },
             { id: 5, nome: "RAFAEL CARLOS", funcao: "Supervisor de Produção", tipo: "supervisor", icone: "user-tie", setor: "Manufatura" },
             { id: 6, nome: "ROMERO XAVIER", funcao: "Supervisor", tipo: "supervisor", icone: "user-tie", setor: "Manufatura" },
             { id: 7, nome: "VINICIUS NUNES", funcao: "Supervisor", tipo: "supervisor", icone: "user-tie", setor: "Manufatura" },
@@ -537,23 +537,23 @@
             { id: 13, nome: "CLAUDIVAN", funcao: "Especialista de Manutenção", tipo: "especialista-manutencao", icone: "tools", setor: "Manutenção" }
         ];
 
-        // e-mails para IDs de perfil 
+        // E-mails para IDs de perfil (corrigido)
         const emailParaPerfil = {
             "telmo.lima@system.com": 1,
             "cleiton.paulo@system.com": 2,
             "efrayn.silva@system.com": 3,
-            "jean.pierre@system.com":4,
-            "rafaelcarlos@system.com":5,
-            "romeroxavier@system.com":6,
-            "vinicius.nunes@system.com":7,
-            "sergio.cunha@system.com":8,
-            "joão.paulo@system.com":9,
-            "anielloaulette@system.com":10,
-            "joséroberto@system.com":11,
-            "david33@system.com":12,
-            "claudivan78@system.com":13,
+            "jean.pierre@system.com": 4,
+            "rafael.carlos@system.com": 5,  // Corrigido: rafael.carlos (com ponto)
+            "romero.xavier@system.com": 6,   // Corrigido: romero.xavier
+            "vinicius.nunes@system.com": 7,
+            "sergio.cunha@system.com": 8,
+            "joao.paulo@system.com": 9,      // Corrigido: joao.paulo
+            "aniello.aulette@system.com": 10, // Corrigido: aniello.aulette
+            "jose.roberto@system.com": 11,    // Corrigido: jose.roberto
+            "david@system.com": 12,
+            "claudivan@system.com": 13,
             "maicon.paiao@system.com": null,  // Gerente 
-            "janailson@system.com": null   // Gerente 
+            "janailson@system.com": null      // Gerente 
         };
 
         // USUÁRIOS ADMIN 
@@ -570,20 +570,18 @@
                 const userData = snapshot.val();
                 
                 if (userData) {
-                    console.log("Usuário encontrado:", userData); // DEBUG
+                    console.log("Usuário encontrado:", userData);
                     return userData;
                 } else {
                     // Determinar tipo de usuário baseado no email
-                    const email = user.email.toLowerCase();
-                    console.log("Email do usuário:", email); // DEBUG
-                    console.log("Lista de admins:", admins); // DEBUG
-                    console.log("Email está nos admins?", admins.includes(email)); // DEBUG
+                    const email = user.email.toLowerCase().trim();
+                    console.log("Email do usuário:", email);
                     
                     const tipo = admins.includes(email) ? 'admin' : 'funcionario';
                     const perfilVinculado = emailParaPerfil[email] || null;
                     
-                    console.log("Tipo determinado:", tipo); // DEBUG
-                    console.log("Perfil vinculado:", perfilVinculado); // DEBUG
+                    console.log("Tipo determinado:", tipo);
+                    console.log("Perfil vinculado:", perfilVinculado);
                     
                     const novoUsuario = {
                         email: user.email,
@@ -593,7 +591,7 @@
                         criadoEm: new Date().toISOString()
                     };
                     
-                    console.log("Criando novo usuário:", novoUsuario); // DEBUG
+                    console.log("Criando novo usuário:", novoUsuario);
                     await userRef.set(novoUsuario);
                     return novoUsuario;
                 }
@@ -602,10 +600,11 @@
                 return {
                     email: user.email,
                     tipo: 'funcionario',
-                    perfilVinculado: emailParaPerfil[user.email.toLowerCase()] || null
+                    perfilVinculado: emailParaPerfil[user.email.toLowerCase().trim()] || null
                 };
             }
         }
+
         // Função para renderizar perfis baseado no tipo de usuário
         async function renderizarPerfis(user) {
             const profilesGrid = document.getElementById('profilesGrid');
@@ -615,6 +614,12 @@
             const profilesSubtitle = document.getElementById('profilesSubtitle');
             const infoList = document.getElementById('infoList');
             const userTypeBadge = document.getElementById('userTypeBadge');
+
+            // Verificar se elementos existem
+            if (!profilesGrid || !loadingProfiles) {
+                console.error("Elementos da grid não encontrados!");
+                return;
+            }
 
             // Mostrar loading
             loadingProfiles.style.display = 'block';
@@ -626,33 +631,39 @@
                 const isAdmin = userData.tipo === 'admin';
                 
                 // Atualizar badge do usuário
-                userTypeBadge.textContent = isAdmin ? 'Gerente' : 'Funcionário';
-                userTypeBadge.style.backgroundColor = isAdmin ? '#4f46e5' : '#6b7280';
-                userTypeBadge.style.color = 'white';
+                if (userTypeBadge) {
+                    userTypeBadge.textContent = isAdmin ? 'Gerente' : 'Funcionário';
+                    userTypeBadge.style.backgroundColor = isAdmin ? '#4f46e5' : '#6b7280';
+                    userTypeBadge.style.color = 'white';
+                }
 
                 // Atualizar mensagens baseado no tipo
                 if (isAdmin) {
-                    profilesTitle.textContent = 'Lista de Funcionários';
-                    profilesSubtitle.textContent = 'Selecione um perfil para visualizar as metas';
-                    restrictedMessage.classList.add('hidden');
+                    if (profilesTitle) profilesTitle.textContent = 'Lista de Funcionários';
+                    if (profilesSubtitle) profilesSubtitle.textContent = 'Selecione um perfil para visualizar as metas';
+                    if (restrictedMessage) restrictedMessage.classList.add('hidden');
                     
                     // Mostrar todos os perfis
                     const perfisParaMostrar = todosPerfis;
                     
+                    let gridHtml = '';
                     perfisParaMostrar.forEach(perfil => {
-                        profilesGrid.innerHTML += criarCardPerfil(perfil, userData);
+                        gridHtml += criarCardPerfil(perfil, userData);
                     });
+                    profilesGrid.innerHTML = gridHtml;
 
                     // Atualizar info box para admin
-                    infoList.innerHTML = `
-                        <li><i class="fas fa-check-circle"></i> Você é GERENTE - tem acesso a todos os ${perfisParaMostrar.length} perfis</li>
-                        <li><i class="fas fa-check-circle"></i> Clique em qualquer perfil para abrir</li>
-                        <li><i class="fas fa-check-circle"></i> Use o botão "Sair" para voltar ao login</li>
-                    `;
+                    if (infoList) {
+                        infoList.innerHTML = `
+                            <li><i class="fas fa-check-circle"></i> Você é GERENTE - tem acesso a todos os ${perfisParaMostrar.length} perfis</li>
+                            <li><i class="fas fa-check-circle"></i> Clique em qualquer perfil para abrir</li>
+                            <li><i class="fas fa-check-circle"></i> Use o botão "Sair" para voltar ao login</li>
+                        `;
+                    }
                 } else {
-                    profilesTitle.textContent = 'Meu Perfil';
-                    profilesSubtitle.textContent = 'Visualize suas metas';
-                    restrictedMessage.classList.remove('hidden');
+                    if (profilesTitle) profilesTitle.textContent = 'Meu Perfil';
+                    if (profilesSubtitle) profilesSubtitle.textContent = 'Visualize suas metas';
+                    if (restrictedMessage) restrictedMessage.classList.remove('hidden');
                     
                     // Mostrar apenas o perfil do usuário
                     const perfilUsuario = todosPerfis.find(p => p.id === userData.perfilVinculado);
@@ -670,11 +681,13 @@
                     }
 
                     // Atualizar info box para funcionário
-                    infoList.innerHTML = `
-                        <li><i class="fas fa-check-circle"></i> Você tem acesso apenas ao seu próprio perfil</li>
-                        <li><i class="fas fa-check-circle"></i> Clique no seu perfil para visualizar as metas</li>
-                        <li><i class="fas fa-check-circle"></i> Use o botão "Sair" para voltar ao login</li>
-                    `;
+                    if (infoList) {
+                        infoList.innerHTML = `
+                            <li><i class="fas fa-check-circle"></i> Você tem acesso apenas ao seu próprio perfil</li>
+                            <li><i class="fas fa-check-circle"></i> Clique no seu perfil para visualizar as metas</li>
+                            <li><i class="fas fa-check-circle"></i> Use o botão "Sair" para voltar ao login</li>
+                        `;
+                    }
                 }
             } catch (error) {
                 console.error("Erro ao renderizar perfis:", error);
@@ -692,7 +705,6 @@
 
         // Função auxiliar para criar card de perfil
         function criarCardPerfil(perfil, userData, isOwnProfile = false) {
-            const isAdmin = userData.tipo === 'admin';
             const ownProfileIndicator = isOwnProfile ? 
                 '<div class="profile-owner-indicator" title="Seu perfil"><i class="fas fa-star"></i></div>' : '';
             
@@ -738,6 +750,7 @@
                     errorElement.classList.remove('show');
                 })
                 .catch((error) => {
+                    console.error("Erro no login:", error);
                     errorElement.textContent = "E-mail ou senha incorretos!";
                     errorElement.classList.add('show');
                 });
@@ -748,7 +761,8 @@
             auth.signOut().then(() => {
                 document.getElementById('loginScreen').classList.remove('hidden');
                 document.getElementById('profilesScreen').classList.add('hidden');
-                document.getElementById('profilesGrid').innerHTML = '';
+                const profilesGrid = document.getElementById('profilesGrid');
+                if (profilesGrid) profilesGrid.innerHTML = '';
             });
         }
 
