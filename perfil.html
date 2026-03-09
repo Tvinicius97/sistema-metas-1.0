@@ -59,6 +59,9 @@
     <button class="tab-btn" data-cat="delivery" onclick="filterCat('delivery', this)">
         <i class="fas fa-truck"></i> Delivery
     </button>
+    <button class="tab-btn" data-cat="moral" onclick="filterCat('moral', this)">
+        <i class="fas fa-users"></i> Moral
+    </button>
 </div>
 
 <!-- ACTIONS -->
@@ -108,56 +111,74 @@ const database = firebase.database();
 
 // ──────────────────────────────────────────────
 // ESTRUTURA PADRÃO DOS KPIs
-// Usada na primeira vez que o perfil é acessado
+// Fonte: Metas_2026_Manufatura_Chocolate.xlsx
 // ──────────────────────────────────────────────
 const KPIS_PADRAO = [
-    { categoria:"Safety",   kpi:"% TFR",                           unidade:"%" },
-    { categoria:"Safety",   kpi:"% TAFR",                          unidade:"%" },
-    { categoria:"Safety",   kpi:"BICS",                            unidade:"#" },
-    { categoria:"Safety",   kpi:"Postos Vermelhos",                unidade:"#" },
-    { categoria:"Safety",   kpi:"Plano de Manutenção",             unidade:"%" },
+    // SAFETY
+    { categoria:"Safety",   kpi:"TAR reduction (planta)",          unidade:"%",        meta:"0,31"                          },
+    { categoria:"Safety",   kpi:"BOS por pessoa por mês",          unidade:"qtd",      meta:"25"                            },
+    { categoria:"Safety",   kpi:"% Inspeção Planejadas",           unidade:"%",        meta:"100%"                          },
+    { categoria:"Safety",   kpi:"Gemba da Liderança",              unidade:"%",        meta:"85% participação semanal"      },
+    { categoria:"Safety",   kpi:"Exceção de LOTO",                 unidade:"qtd",      meta:"Redução 50% vs 2025"           },
+    { categoria:"Safety",   kpi:"% Ocorrências de PSM",            unidade:"%",        meta:"Redução 30% vs 2025"           },
+    { categoria:"Safety",   kpi:"% Aderência Checkup preventivo",  unidade:"%",        meta:">= 95%"                        },
+    { categoria:"Safety",   kpi:"Safety Priority Standard",        unidade:"%",        meta:">= 90%"                        },
+    { categoria:"Safety",   kpi:"Food Waste sites Change vs 2024", unidade:"%",        meta:"84,7%"                         },
+    { categoria:"Safety",   kpi:"CO2 site change vs 2024",         unidade:"%",        meta:"7,91%"                         },
+    { categoria:"Safety",   kpi:"Water site change vs 2024",       unidade:"%",        meta:"17,33%"                        },
 
-    { categoria:"Quality",  kpi:"IRC",                             unidade:"%" },
-    { categoria:"Quality",  kpi:"PPM",                             unidade:"# ppm" },
-    { categoria:"Quality",  kpi:"% CTQ (CPM) / Reportáveis",      unidade:"%" },
-    { categoria:"Quality",  kpi:"% CTQ (CPM) / Todos",            unidade:"%" },
-    { categoria:"Quality",  kpi:"Retenções",                       unidade:"#" },
-    { categoria:"Quality",  kpi:"Nota GMP",                        unidade:"%" },
-    { categoria:"Quality",  kpi:"Micro Index Processo",            unidade:"%" },
+    // QUALITY
+    { categoria:"Quality",  kpi:"Prioritary PPM",                  unidade:"ppm",      meta:"Dentro do target"              },
+    { categoria:"Quality",  kpi:"CPMU Production - CHOCOLATE",     unidade:"%",        meta:"Reduzir -32% CPMU vs 2025"     },
+    { categoria:"Quality",  kpi:"PQB Result",                      unidade:"score",    meta:"On Strategy para Bis"          },
+    { categoria:"Quality",  kpi:"Retenção",                        unidade:"qtd",      meta:"-20% vs 2025"                  },
+    { categoria:"Quality",  kpi:"FSSC22000",                       unidade:"qtd",      meta:"0 não-conformidades"           },
+    { categoria:"Quality",  kpi:"GMP",                             unidade:"%",        meta:">90%"                          },
+    { categoria:"Quality",  kpi:"% CTQ com Cpm>1",                 unidade:"%",        meta:"100%"                          },
 
-    { categoria:"Costs",    kpi:"Yield Prévia",                    unidade:"%" },
-    { categoria:"Costs",    kpi:"GE(%)",                           unidade:"%" },
-    { categoria:"Costs",    kpi:"OEE(%)",                          unidade:"%" },
-    { categoria:"Costs",    kpi:"Conversion Cost",                 unidade:"%" },
-    { categoria:"Costs",    kpi:"Produto Subsequencial",           unidade:"%" },
-    { categoria:"Costs",    kpi:"Produto Reconstituído",           unidade:"%" },
-    { categoria:"Costs",    kpi:"Geração de refugo(%)",            unidade:"Ton" },
-    { categoria:"Costs",    kpi:"Geração de reprocesso(%)",        unidade:"#" },
-    { categoria:"Costs",    kpi:"Geração de sobrepeso(%)",         unidade:"%" },
-    { categoria:"Costs",    kpi:"Headcount(Abs)",                  unidade:"%" },
-    { categoria:"Costs",    kpi:"Impacto Paradas Operacionais(%)", unidade:"%" },
-    { categoria:"Costs",    kpi:"Impacto Pequenas Paradas(%)",     unidade:"%" },
+    // COSTS
+    { categoria:"Costs",    kpi:"Conversion Cost ($/ton) - CHOC",  unidade:"$/ton",    meta:"1,02"                          },
+    { categoria:"Costs",    kpi:"Rendimento Yield (%) - CHOC",     unidade:"%",        meta:"98,38%"                        },
+    { categoria:"Costs",    kpi:"Eficiência Global (%)",           unidade:"%",        meta:"83,8%"                         },
+    { categoria:"Costs",    kpi:"#Headcount",                      unidade:"qtd",      meta:"Em linha ao AC'26"             },
+    { categoria:"Costs",    kpi:"Net Prody Execution",             unidade:"%",        meta:"Em linha ao AC'26"             },
+    { categoria:"Costs",    kpi:"Gross Prody Execution",           unidade:"%",        meta:"Em linha ao AC'26"             },
+    { categoria:"Costs",    kpi:"Kg per Hours Worked (Kg/hw)",     unidade:"kg/hw",    meta:"34,4"                          },
+    { categoria:"Costs",    kpi:"Working Budget Compliance",       unidade:"%",        meta:"Cumprir custo mensal"          },
+    { categoria:"Costs",    kpi:"DBNR/RfS",                        unidade:"dias",     meta:"7,3"                           },
+    { categoria:"Costs",    kpi:"Capex Execution",                 unidade:"%",        meta:"Plano capex manufatura"        },
+    { categoria:"Costs",    kpi:"VSU",                             unidade:"score",    meta:"1"                             },
+    { categoria:"Costs",    kpi:"BSC Compliance (%)",              unidade:"%",        meta:"95%"                           },
 
-    { categoria:"Delivery", kpi:"Impacto Quebras(%)",              unidade:"%" },
-    { categoria:"Delivery", kpi:"CTS(%)",                          unidade:"%" },
-    { categoria:"Delivery", kpi:"Actual Vs. IBP(Var)",             unidade:"%" },
-    { categoria:"Delivery", kpi:"Quebras",                         unidade:"%" },
-    { categoria:"Delivery", kpi:"Nota 5S",                         unidade:"#" },
-    { categoria:"Delivery", kpi:"Compliance to Rollout MA",        unidade:"#" },
-    { categoria:"Delivery", kpi:"# colaboradores com +20h",        unidade:"#" },
-    { categoria:"Delivery", kpi:"# colaboradores sem +20h",        unidade:"#" },
-    { categoria:"Delivery", kpi:"# total de infrações Jornada",    unidade:"Min" },
-    { categoria:"Delivery", kpi:"# de ideias implementadas",       unidade:"%" },
-    { categoria:"Delivery", kpi:"MTBF",                            unidade:"%" },
-    { categoria:"Delivery", kpi:"Aderência a Win",                 unidade:"%" },
-    { categoria:"Delivery", kpi:"Aderência a Genus",               unidade:"%" },
-    { categoria:"Delivery", kpi:"Aderência a PCD",                 unidade:"%" },
-    { categoria:"Delivery", kpi:"Hoshin Compliance",               unidade:"%" },
-    { categoria:"Delivery", kpi:"Index Engagement",                unidade:"%" },
+    // DELIVERY
+    { categoria:"Delivery", kpi:"Cumprimento do Plano (CTS) (%)",  unidade:"%",        meta:"94%"                           },
+    { categoria:"Delivery", kpi:"Volume (Ktons)",                  unidade:"Kton",     meta:"100% AC26"                     },
+    { categoria:"Delivery", kpi:"Actual Vs. IBP(Var)",             unidade:"%",        meta:"100%"                          },
+    { categoria:"Delivery", kpi:"Execução S/4HANA",                unidade:"status",   meta:"Continuidade operacional"      },
+    { categoria:"Delivery", kpi:"% Execução Hoshin",               unidade:"%",        meta:"95%"                           },
+
+    // MORAL
+    { categoria:"Moral",    kpi:"% Execução GGA",                  unidade:"%",        meta:"100%"                          },
+    { categoria:"Moral",    kpi:"JIPM Consistency Award",          unidade:"status",   meta:"PASSED"                        },
+    { categoria:"Moral",    kpi:"% Aderência MA (passos ant.)",    unidade:"%",        meta:"100%"                          },
+    { categoria:"Moral",    kpi:"% Plano Anual Treinamento (PAT)", unidade:"%",        meta:"100%"                          },
+    { categoria:"Moral",    kpi:"Compliance to Rollout MA - Ph4",  unidade:"%",        meta:"100%"                          },
+    { categoria:"Moral",    kpi:"MTBF",                            unidade:"%",        meta:"Aderência ao passo AM"         },
+    { categoria:"Moral",    kpi:"Engagement Index",                unidade:"%",        meta:"95%"                           },
+    { categoria:"Moral",    kpi:"Engagement Index (Elegíveis)",    unidade:"%",        meta:"96%"                           },
+    { categoria:"Moral",    kpi:"Plano de Sucessão (1:1)",         unidade:"ratio",    meta:"1/1"                           },
+    { categoria:"Moral",    kpi:"WIM / PCD / Genus (Inclusion)",   unidade:"score",    meta:"Conforme targets PCD/Genus/WIM" },
+    { categoria:"Moral",    kpi:"# Saldo de Banco de Horas",       unidade:"horas",    meta:"Reduzir 70% vs 2025"           },
+    { categoria:"Moral",    kpi:"Absenteísmo",                     unidade:"%",        meta:"2,3%"                          },
+    { categoria:"Moral",    kpi:"Turn Over Voluntário",            unidade:"%",        meta:"5%"                            },
+    { categoria:"Moral",    kpi:"Avaliação MYR & YER",             unidade:"%",        meta:"100% dentro do prazo"          },
+    { categoria:"Moral",    kpi:"Nota 5S",                         unidade:"%",        meta:">= 85%"                        },
+    { categoria:"Moral",    kpi:"6 Star Model Rollout",            unidade:"status",   meta:"Suportar implementação"        },
+    { categoria:"Moral",    kpi:"Desenvolvimento Pessoal",         unidade:"status",   meta:"Definir foco 2026"             },
 ];
 
 const MESES      = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-const CAT_ICONS  = { Safety:"fa-shield-alt", Quality:"fa-star", Costs:"fa-coins", Delivery:"fa-truck" };
+const CAT_ICONS  = { Safety:"fa-shield-alt", Quality:"fa-star", Costs:"fa-coins", Delivery:"fa-truck", Moral:"fa-users" };
 
 // ──────────────────────────────────────────────
 // ESTADO
@@ -249,7 +270,7 @@ function renderizarKpis() {
     const container = document.getElementById('mainContent');
     container.innerHTML = '';
 
-    ['Safety','Quality','Costs','Delivery'].forEach(cat => {
+    ['Safety','Quality','Costs','Delivery','Moral'].forEach(cat => {
         if (activeCat !== 'all' && cat.toLowerCase() !== activeCat) return;
 
         const items = kpisData.filter(k => k.categoria === cat);
@@ -304,6 +325,7 @@ function criarKpiCard(kpi) {
             <span>Últimas: ${ultimasStr}</span>
             <span>12 meses</span>
         </div>
+        ${kpi.meta ? `<div class="kpi-meta-row"><i class="fas fa-bullseye"></i> Meta: ${kpi.meta}</div>` : ''}
         <div class="monthly-grid" id="monthly-${globalIdx}">
             ${renderMeses(kpi.notas, globalIdx)}
         </div>

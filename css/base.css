@@ -7,11 +7,12 @@
 
 /* ── Variáveis ── */
 :root {
-    /* Categorias */
-    --safety:   #16a34a;
-    --quality:  #2563eb;
-    --costs:    #ea580c;
-    --delivery: #7c3aed;
+    /* Categorias — cores oficiais */
+    --safety:   #2e7d32;
+    --quality:  #6a1b9a;
+    --costs:    #f9a825;
+    --delivery: #c62828;
+    --moral:    #1565c0;
 
     /* Superfícies */
     --bg:       #0f1117;

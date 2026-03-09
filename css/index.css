@@ -347,20 +347,20 @@ body {
 }
 
 /* ── Cores por tipo de perfil ── */
-.type-assistente-adm            { --card-glow: rgba(99, 102, 241, 0.08); }
-.type-especialista-processo     { --card-glow: rgba(236, 72, 153, 0.08); }
-.type-supervisor                { --card-glow: rgba(6, 182, 212, 0.08);  }
-.type-especialista-manutencao   { --card-glow: rgba(16, 185, 129, 0.08); }
+.type-assistente-adm            { --card-glow: rgba(21,101,192,0.08); }
+.type-especialista-processo     { --card-glow: rgba(106,27,154,0.08); }
+.type-supervisor                { --card-glow: rgba(198,40,40,0.08);  }
+.type-especialista-manutencao   { --card-glow: rgba(46,125,50,0.08);  }
 
-.type-assistente-adm .card-icon-wrap          { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-.type-especialista-processo .card-icon-wrap   { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
-.type-supervisor .card-icon-wrap              { background: rgba(6, 182, 212, 0.15);  color: #22d3ee; }
-.type-especialista-manutencao .card-icon-wrap { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.type-assistente-adm .card-icon-wrap          { background: rgba(21,101,192,0.15);  color: #64b5f6; }
+.type-especialista-processo .card-icon-wrap   { background: rgba(106,27,154,0.15);  color: #ce93d8; }
+.type-supervisor .card-icon-wrap              { background: rgba(198,40,40,0.15);   color: #ef9a9a; }
+.type-especialista-manutencao .card-icon-wrap { background: rgba(46,125,50,0.15);   color: #a5d6a7; }
 
-.type-assistente-adm .card-badge          { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-.type-especialista-processo .card-badge   { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
-.type-supervisor .card-badge              { background: rgba(6, 182, 212, 0.15);  color: #22d3ee; }
-.type-especialista-manutencao .card-badge { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.type-assistente-adm .card-badge          { background: rgba(21,101,192,0.15);  color: #64b5f6; }
+.type-especialista-processo .card-badge   { background: rgba(106,27,154,0.15);  color: #ce93d8; }
+.type-supervisor .card-badge              { background: rgba(198,40,40,0.15);   color: #ef9a9a; }
+.type-especialista-manutencao .card-badge { background: rgba(46,125,50,0.15);   color: #a5d6a7; }
 
 /* ── Responsive ── */
 @media (max-width: 600px) {

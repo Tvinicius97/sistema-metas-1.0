@@ -170,6 +170,7 @@ body {
 .chip-quality .dot  { background: var(--quality);  }
 .chip-costs .dot    { background: var(--costs);    }
 .chip-delivery .dot { background: var(--delivery); }
+.chip-moral .dot    { background: var(--moral);    }
 
 /* ════════════════════════════════════════════════
    TABS DE CATEGORIA
@@ -206,8 +207,9 @@ body {
 .tab-btn.active-all      { background: #334155;        color: white; border-color: transparent; }
 .tab-btn.active-safety   { background: var(--safety);   color: white; border-color: transparent; }
 .tab-btn.active-quality  { background: var(--quality);  color: white; border-color: transparent; }
-.tab-btn.active-costs    { background: var(--costs);    color: white; border-color: transparent; }
+.tab-btn.active-costs    { background: var(--costs);    color: #1a1a1a; border-color: transparent; }
 .tab-btn.active-delivery { background: var(--delivery); color: white; border-color: transparent; }
+.tab-btn.active-moral    { background: var(--moral);    color: white; border-color: transparent; }
 
 /* ════════════════════════════════════════════════
    BARRA DE AÇÕES (expandir/fechar)
@@ -267,10 +269,11 @@ body {
     font-size: 1rem;
 }
 
-.cat-safety   .cat-icon { background: rgba(22, 163, 74, 0.15);  color: var(--safety);   }
-.cat-quality  .cat-icon { background: rgba(37, 99, 235, 0.15);  color: var(--quality);  }
-.cat-costs    .cat-icon { background: rgba(234, 88, 12, 0.15);  color: var(--costs);    }
-.cat-delivery .cat-icon { background: rgba(124, 58, 237, 0.15); color: var(--delivery); }
+.cat-safety   .cat-icon { background: rgba(46,125,50,0.15);   color: var(--safety);   }
+.cat-quality  .cat-icon { background: rgba(106,27,154,0.15);  color: var(--quality);  }
+.cat-costs    .cat-icon { background: rgba(249,168,37,0.15);  color: var(--costs);    }
+.cat-delivery .cat-icon { background: rgba(198,40,40,0.15);   color: var(--delivery); }
+.cat-moral    .cat-icon { background: rgba(21,101,192,0.15);  color: var(--moral);    }
 
 .category-block-header h2 {
     font-size: 1.15rem;
@@ -282,6 +285,7 @@ body {
 .cat-quality  .category-block-header h2 { color: var(--quality);  }
 .cat-costs    .category-block-header h2 { color: var(--costs);    }
 .cat-delivery .category-block-header h2 { color: var(--delivery); }
+.cat-moral    .category-block-header h2 { color: var(--moral);    }
 
 .cat-count {
     margin-left: auto;
@@ -360,9 +364,9 @@ body {
     transition: var(--transition);
 }
 
-.avg-green { background: rgba(22, 163, 74, 0.18); color: #4ade80; }
-.avg-red   { background: rgba(220, 38, 38, 0.18); color: #f87171; }
-.avg-na    { background: var(--surface2);          color: var(--text3); }
+.avg-green { background: rgba(46,125,50,0.2);  color: #81c784; }
+.avg-red   { background: rgba(198,40,40,0.2);  color: #e57373; }
+.avg-na    { background: var(--surface2);       color: var(--text3); }
 
 /* Preview das últimas notas */
 .kpi-preview-row {
@@ -542,9 +546,25 @@ body {
 .toast.success    { background: rgba(22, 163, 74, 0.9); color: white; }
 .toast.error      { background: rgba(220, 38, 38, 0.9); color: white; }
 
-/* ════════════════════════════════════════════════
-   RESPONSIVE
-   ════════════════════════════════════════════════ */
+/* ── Cores por tipo de perfil ── (adicionando Moral) */
+.cat-moral .cat-icon { background: rgba(234,179,8,0.15); color: #facc15; }
+.cat-moral .category-block-header h2 { color: #facc15; }
+.chip-moral .dot { background: #facc15; }
+.tab-btn.active-moral { background: #b45309; color: white; border-color: transparent; }
+
+/* ── Linha de meta no card ── */
+.kpi-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px 10px;
+    font-size: 0.75rem;
+    color: #fbbf24;
+    font-family: 'DM Mono', monospace;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2px;
+}
+.kpi-meta-row i { font-size: 0.7rem; }
 @media (max-width: 768px) {
     .profile-hero   { padding: 20px; }
     .kpi-grid       { grid-template-columns: 1fr; }
