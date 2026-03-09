@@ -15,8 +15,19 @@
 </head>
 <body>
 
+    <!-- LOADING INICIAL (enquanto Firebase verifica sessão) -->
+    <div id="authLoading" style="
+        position: fixed; inset: 0;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 14px; background: var(--bg); z-index: 999;
+    ">
+        <div class="spinner"></div>
+        <span style="color: var(--text3); font-size: 0.85rem;">Verificando sessão...</span>
+    </div>
+
     <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="login-wrap">
+    <div id="loginScreen" class="login-wrap hidden">
         <div class="login-logo">
             <div class="logo-icon"><i class="fas fa-chart-pie"></i></div>
             <div class="login-logo-text">
@@ -151,6 +162,8 @@ auth.onAuthStateChanged(async (user) => {
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('profilesScreen').classList.add('hidden');
     }
+    // Remove a tela de loading após o Firebase resolver a sessão
+    document.getElementById('authLoading').style.display = 'none';
 });
 
 // ─────────────────────────────────────────
