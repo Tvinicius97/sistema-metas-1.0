@@ -1,0 +1,90 @@
+/* ================================================
+   BASE.CSS — Variáveis, reset e estilos globais
+   Compartilhado entre index.html e perfil.html
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Variáveis ── */
+:root {
+    /* Categorias */
+    --safety:   #16a34a;
+    --quality:  #2563eb;
+    --costs:    #ea580c;
+    --delivery: #7c3aed;
+
+    /* Superfícies */
+    --bg:       #0f1117;
+    --surface:  #181c27;
+    --surface2: #1f2433;
+    --border:   rgba(255, 255, 255, 0.07);
+
+    /* Texto */
+    --text:  #f0f2f8;
+    --text2: #8b92a8;
+    --text3: #555e7a;
+
+    /* Accent */
+    --accent:  #6366f1;
+    --accent2: #8b5cf6;
+
+    /* Misc */
+    --radius:     14px;
+    --transition: 0.22s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Base ── */
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Utilitários ── */
+.hidden { display: none !important; }
+
+/* ── Spinner ── */
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--surface2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Loading state ── */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: var(--text3);
+    font-size: 0.9rem;
+}
+
+/* ── Animações de entrada ── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

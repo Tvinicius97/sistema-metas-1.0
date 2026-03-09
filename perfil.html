@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Avaliação</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/perfil.css">
+
+    <!-- FIREBASE SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+    <button class="back-btn" onclick="voltarParaIndex()">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </button>
+    <div class="header-title">
+        <div class="logo-dot"><i class="fas fa-chart-pie"></i></div>
+        <div>
+            <h1>Perfil de Avaliação</h1>
+            <span id="subtitleLabel">Safety · Quality · Costs · Delivery</span>
+        </div>
+    </div>
+    <button class="edit-btn" id="editBtn" onclick="toggleEditMode()">
+        <i class="fas fa-pen"></i> Editar Metas
+    </button>
+</div>
+
+<!-- PROFILE HERO -->
+<div class="profile-hero" id="profileHero">
+    <div class="profile-avatar"><i class="fas fa-user-tie"></i></div>
+    <div class="profile-meta">
+        <h2 id="profileName">Carregando...</h2>
+        <p id="profileRole">—</p>
+    </div>
+    <div class="profile-kpi-counts" id="kpiCounts"></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-row" id="tabsRow">
+    <button class="tab-btn active-all" data-cat="all" onclick="filterCat('all', this)">
+        <i class="fas fa-th"></i> Todos
+    </button>
+    <button class="tab-btn" data-cat="safety" onclick="filterCat('safety', this)">
+        <i class="fas fa-shield-alt"></i> Safety
+    </button>
+    <button class="tab-btn" data-cat="quality" onclick="filterCat('quality', this)">
+        <i class="fas fa-star"></i> Quality
+    </button>
+    <button class="tab-btn" data-cat="costs" onclick="filterCat('costs', this)">
+        <i class="fas fa-coins"></i> Costs
+    </button>
+    <button class="tab-btn" data-cat="delivery" onclick="filterCat('delivery', this)">
+        <i class="fas fa-truck"></i> Delivery
+    </button>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions-row">
+    <button class="action-btn" onclick="expandAll()">
+        <i class="fas fa-expand-alt"></i> Abrir todos
+    </button>
+    <button class="action-btn" onclick="collapseAll()">
+        <i class="fas fa-compress-alt"></i> Fechar todos
+    </button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content" id="mainContent">
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Carregando perfil...</span>
+    </div>
+</div>
+
+<!-- SAVE BAR (visível no modo edição) -->
+<div class="save-bar" id="saveBar">
+    <span class="save-bar-text">Modo edição ativo — <strong>alterações não salvas</strong></span>
+    <button class="btn-cancel-edit" onclick="cancelEdit()"><i class="fas fa-times"></i> Cancelar</button>
+    <button class="btn-save" onclick="salvarDados()"><i class="fas fa-save"></i> Salvar no Firebase</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ──────────────────────────────────────────────
+// FIREBASE CONFIG
+// ──────────────────────────────────────────────
+const firebaseConfig = {
+    apiKey: "AIzaSyD_tJfqaCSvanVu0Rmr7qD2fAasEVwelOw",
+    authDomain: "sistema-de-metas-f0fea.firebaseapp.com",
+    projectId: "sistema-de-metas-f0fea",
+    storageBucket: "sistema-de-metas-f0fea.firebasestorage.app",
+    messagingSenderId: "316922806030",
+    appId: "1:316922806030:web:25cad5c80de9a4acba215f",
+    databaseURL: "https://sistema-de-metas-f0fea-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const auth     = firebase.auth();
+const database = firebase.database();
+
+// ──────────────────────────────────────────────
+// ESTRUTURA PADRÃO DOS KPIs
+// Usada na primeira vez que o perfil é acessado
+// ──────────────────────────────────────────────
+const KPIS_PADRAO = [
+    { categoria:"Safety",   kpi:"% TFR",                           unidade:"%" },
+    { categoria:"Safety",   kpi:"% TAFR",                          unidade:"%" },
+    { categoria:"Safety",   kpi:"BICS",                            unidade:"#" },
+    { categoria:"Safety",   kpi:"Postos Vermelhos",                unidade:"#" },
+    { categoria:"Safety",   kpi:"Plano de Manutenção",             unidade:"%" },
+
+    { categoria:"Quality",  kpi:"IRC",                             unidade:"%" },
+    { categoria:"Quality",  kpi:"PPM",                             unidade:"# ppm" },
+    { categoria:"Quality",  kpi:"% CTQ (CPM) / Reportáveis",      unidade:"%" },
+    { categoria:"Quality",  kpi:"% CTQ (CPM) / Todos",            unidade:"%" },
+    { categoria:"Quality",  kpi:"Retenções",                       unidade:"#" },
+    { categoria:"Quality",  kpi:"Nota GMP",                        unidade:"%" },
+    { categoria:"Quality",  kpi:"Micro Index Processo",            unidade:"%" },
+
+    { categoria:"Costs",    kpi:"Yield Prévia",                    unidade:"%" },
+    { categoria:"Costs",    kpi:"GE(%)",                           unidade:"%" },
+    { categoria:"Costs",    kpi:"OEE(%)",                          unidade:"%" },
+    { categoria:"Costs",    kpi:"Conversion Cost",                 unidade:"%" },
+    { categoria:"Costs",    kpi:"Produto Subsequencial",           unidade:"%" },
+    { categoria:"Costs",    kpi:"Produto Reconstituído",           unidade:"%" },
+    { categoria:"Costs",    kpi:"Geração de refugo(%)",            unidade:"Ton" },
+    { categoria:"Costs",    kpi:"Geração de reprocesso(%)",        unidade:"#" },
+    { categoria:"Costs",    kpi:"Geração de sobrepeso(%)",         unidade:"%" },
+    { categoria:"Costs",    kpi:"Headcount(Abs)",                  unidade:"%" },
+    { categoria:"Costs",    kpi:"Impacto Paradas Operacionais(%)", unidade:"%" },
+    { categoria:"Costs",    kpi:"Impacto Pequenas Paradas(%)",     unidade:"%" },
+
+    { categoria:"Delivery", kpi:"Impacto Quebras(%)",              unidade:"%" },
+    { categoria:"Delivery", kpi:"CTS(%)",                          unidade:"%" },
+    { categoria:"Delivery", kpi:"Actual Vs. IBP(Var)",             unidade:"%" },
+    { categoria:"Delivery", kpi:"Quebras",                         unidade:"%" },
+    { categoria:"Delivery", kpi:"Nota 5S",                         unidade:"#" },
+    { categoria:"Delivery", kpi:"Compliance to Rollout MA",        unidade:"#" },
+    { categoria:"Delivery", kpi:"# colaboradores com +20h",        unidade:"#" },
+    { categoria:"Delivery", kpi:"# colaboradores sem +20h",        unidade:"#" },
+    { categoria:"Delivery", kpi:"# total de infrações Jornada",    unidade:"Min" },
+    { categoria:"Delivery", kpi:"# de ideias implementadas",       unidade:"%" },
+    { categoria:"Delivery", kpi:"MTBF",                            unidade:"%" },
+    { categoria:"Delivery", kpi:"Aderência a Win",                 unidade:"%" },
+    { categoria:"Delivery", kpi:"Aderência a Genus",               unidade:"%" },
+    { categoria:"Delivery", kpi:"Aderência a PCD",                 unidade:"%" },
+    { categoria:"Delivery", kpi:"Hoshin Compliance",               unidade:"%" },
+    { categoria:"Delivery", kpi:"Index Engagement",                unidade:"%" },
+];
+
+const MESES      = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+const CAT_ICONS  = { Safety:"fa-shield-alt", Quality:"fa-star", Costs:"fa-coins", Delivery:"fa-truck" };
+
+// ──────────────────────────────────────────────
+// ESTADO
+// ──────────────────────────────────────────────
+let perfilId   = null;
+let perfilData = null;
+let kpisData   = [];
+let isAdmin    = false;
+let editMode   = false;
+let activeCat  = 'all';
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+
+    const params = new URLSearchParams(window.location.search);
+    perfilId = params.get('id');
+    if (!perfilId) { window.location.href = 'index.html'; return; }
+
+    try {
+        const snap = await database.ref('usuarios/' + user.uid).once('value');
+        isAdmin = snap.val()?.tipo === 'admin';
+    } catch(e) { isAdmin = false; }
+
+    if (isAdmin) document.getElementById('editBtn').style.display = 'flex';
+
+    await carregarPerfil();
+});
+
+// ──────────────────────────────────────────────
+// CARREGAR PERFIL DO FIREBASE
+// ──────────────────────────────────────────────
+async function carregarPerfil() {
+    try {
+        const snapInfo = await database.ref(`perfis/${perfilId}/info`).once('value');
+        perfilData = snapInfo.val();
+
+        if (!perfilData) {
+            await inicializarPerfil();
+            const s2 = await database.ref(`perfis/${perfilId}/info`).once('value');
+            perfilData = s2.val();
+        }
+
+        const snapKpis = await database.ref(`perfis/${perfilId}/kpis`).once('value');
+        const rawKpis  = snapKpis.val();
+
+        kpisData = rawKpis || KPIS_PADRAO.map(k => ({ ...k, notas: Array(12).fill(null) }));
+
+        renderizarPerfil();
+    } catch(err) {
+        document.getElementById('mainContent').innerHTML = `
+            <div class="loading-state" style="color:#f87171">
+                <i class="fas fa-exclamation-circle" style="font-size:2rem"></i>
+                <span>Erro ao carregar: ${err.message}</span>
+            </div>`;
+    }
+}
+
+async function inicializarPerfil() {
+    await database.ref(`perfis/${perfilId}/info`).set({
+        nome: `Perfil ${perfilId}`, funcao: "—", setor: "Manufatura", tipo: "assistente-adm"
+    });
+    await database.ref(`perfis/${perfilId}/kpis`).set(
+        KPIS_PADRAO.map(k => ({ ...k, notas: Array(12).fill(null) }))
+    );
+}
+
+// ──────────────────────────────────────────────
+// RENDERIZAR
+// ──────────────────────────────────────────────
+function renderizarPerfil() {
+    document.getElementById('profileName').textContent  = perfilData.nome  || `Perfil ${perfilId}`;
+    document.getElementById('profileRole').textContent  = `${perfilData.funcao || '—'} · ${perfilData.setor || '—'}`;
+    document.title = `Perfil - ${perfilData.nome || perfilId}`;
+
+    const counts = {};
+    kpisData.forEach(k => { counts[k.categoria] = (counts[k.categoria] || 0) + 1; });
+    document.getElementById('kpiCounts').innerHTML = Object.entries(counts).map(([cat, n]) => `
+        <div class="kpi-count-chip chip-${cat.toLowerCase()}">
+            <div class="dot"></div>${cat}: ${n}
+        </div>`).join('');
+
+    renderizarKpis();
+}
+
+function renderizarKpis() {
+    const container = document.getElementById('mainContent');
+    container.innerHTML = '';
+
+    ['Safety','Quality','Costs','Delivery'].forEach(cat => {
+        if (activeCat !== 'all' && cat.toLowerCase() !== activeCat) return;
+
+        const items = kpisData.filter(k => k.categoria === cat);
+        if (!items.length) return;
+
+        const block = document.createElement('div');
+        block.className = `category-block cat-${cat.toLowerCase()}`;
+        block.id = `cat-block-${cat.toLowerCase()}`;
+        block.innerHTML = `
+            <div class="category-block-header">
+                <div class="cat-icon"><i class="fas ${CAT_ICONS[cat]}"></i></div>
+                <h2>${cat}</h2>
+                <span class="cat-count">${items.length} KPIs</span>
+            </div>
+            <div class="kpi-grid" id="grid-${cat.toLowerCase()}"></div>
+        `;
+        container.appendChild(block);
+
+        const grid = block.querySelector(`#grid-${cat.toLowerCase()}`);
+        items.forEach(kpi => grid.appendChild(criarKpiCard(kpi)));
+    });
+
+    if (activeCat !== 'all') {
+        setTimeout(() => {
+            document.getElementById(`cat-block-${activeCat}`)?.scrollIntoView({ behavior:'smooth', block:'start' });
+        }, 80);
+    }
+}
+
+function criarKpiCard(kpi) {
+    const globalIdx  = kpisData.indexOf(kpi);
+    const media      = calcMedia(kpi.notas);
+    const ultimasStr = ultimasNotas(kpi.notas);
+
+    let badgeClass = 'avg-na';
+    if (media !== null) badgeClass = media >= 6 ? 'avg-green' : 'avg-red';
+
+    const card = document.createElement('div');
+    card.className    = 'kpi-card';
+    card.dataset.idx  = globalIdx;
+    card.onclick      = () => { if (!editMode) toggleCard(card); };
+
+    card.innerHTML = `
+        <div class="kpi-card-header">
+            <div class="kpi-left">
+                <span class="kpi-name" title="${kpi.kpi}">${kpi.kpi}</span>
+                <span class="kpi-unit">${kpi.unidade}</span>
+            </div>
+            <span class="kpi-avg-badge ${badgeClass}">${media !== null ? media.toFixed(1) : 'N/A'}</span>
+        </div>
+        <div class="kpi-preview-row">
+            <span>Últimas: ${ultimasStr}</span>
+            <span>12 meses</span>
+        </div>
+        <div class="monthly-grid" id="monthly-${globalIdx}">
+            ${renderMeses(kpi.notas, globalIdx)}
+        </div>
+        <div class="expand-toggle">
+            <i class="fas fa-chevron-down"></i>
+            <span style="font-size:0.72rem;font-family:'DM Mono',monospace">ver meses</span>
+        </div>
+    `;
+    return card;
+}
+
+function renderMeses(notas, idx) {
+    return MESES.map((m, i) => {
+        const val    = notas?.[i];
+        const hasVal = val !== null && val !== undefined && val !== 'N/A' && !isNaN(val);
+        return `
+            <div class="month-cell">
+                <div class="month-label">${m}</div>
+                <div class="month-val ${hasVal ? '' : 'na-val'}" data-mi="${idx}" data-month="${i}">
+                    ${hasVal ? parseFloat(val).toFixed(1) : 'N/A'}
+                </div>
+            </div>`;
+    }).join('');
+}
+
+// ──────────────────────────────────────────────
+// MODO EDIÇÃO
+// ──────────────────────────────────────────────
+function toggleEditMode() {
+    editMode ? cancelEdit() : ativarEdicao();
+}
+
+function ativarEdicao() {
+    editMode = true;
+    document.body.classList.add('edit-mode');
+    document.getElementById('editBtn').classList.add('active');
+    document.getElementById('editBtn').innerHTML = '<i class="fas fa-times"></i> Sair da Edição';
+    document.getElementById('saveBar').classList.add('visible');
+
+    document.querySelectorAll('.kpi-card').forEach(c => c.classList.add('is-expanded'));
+
+    document.querySelectorAll('.month-val').forEach(el => {
+        const mi       = el.dataset.mi;
+        const month    = el.dataset.month;
+        const currentVal = el.textContent.trim();
+        const numVal   = (currentVal === 'N/A' || currentVal === '') ? '' : currentVal;
+        el.innerHTML = `<input
+            type="number"
+            class="month-input"
+            data-mi="${mi}"
+            data-month="${month}"
+            value="${numVal}"
+            placeholder="N/A"
+            min="0" max="10" step="0.1"
+        >`;
+    });
+}
+
+function cancelEdit() {
+    editMode = false;
+    document.body.classList.remove('edit-mode');
+    document.getElementById('editBtn').classList.remove('active');
+    document.getElementById('editBtn').innerHTML = '<i class="fas fa-pen"></i> Editar Metas';
+    document.getElementById('saveBar').classList.remove('visible');
+    renderizarKpis();
+}
+
+async function salvarDados() {
+    document.querySelectorAll('.month-input').forEach(inp => {
+        const mi    = parseInt(inp.dataset.mi);
+        const month = parseInt(inp.dataset.month);
+        const val   = inp.value.trim();
+        if (!kpisData[mi]) return;
+        if (!kpisData[mi].notas) kpisData[mi].notas = Array(12).fill(null);
+        kpisData[mi].notas[month] = val === '' ? null : parseFloat(val);
+    });
+
+    try {
+        document.querySelector('.btn-save').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+        await database.ref(`perfis/${perfilId}/kpis`).set(kpisData);
+        showToast('Dados salvos com sucesso!', 'success');
+        editMode = false;
+        document.body.classList.remove('edit-mode');
+        document.getElementById('editBtn').classList.remove('active');
+        document.getElementById('editBtn').innerHTML = '<i class="fas fa-pen"></i> Editar Metas';
+        document.getElementById('saveBar').classList.remove('visible');
+        renderizarPerfil();
+    } catch(err) {
+        showToast('Erro ao salvar: ' + err.message, 'error');
+        document.querySelector('.btn-save').innerHTML = '<i class="fas fa-save"></i> Salvar no Firebase';
+    }
+}
+
+// ──────────────────────────────────────────────
+// HELPERS
+// ──────────────────────────────────────────────
+function calcMedia(notas) {
+    if (!notas) return null;
+    const v = notas.filter(n => n !== null && n !== undefined && !isNaN(n));
+    if (!v.length) return null;
+    return v.reduce((a, b) => a + parseFloat(b), 0) / v.length;
+}
+
+function ultimasNotas(notas) {
+    if (!notas) return 'N/A';
+    const v = notas.filter(n => n !== null && n !== undefined && !isNaN(n));
+    if (!v.length) return 'N/A';
+    return v.slice(-3).map(n => parseFloat(n).toFixed(1)).join(' → ');
+}
+
+function toggleCard(card)  { card.classList.toggle('is-expanded'); }
+function expandAll()       { document.querySelectorAll('.kpi-card').forEach(c => c.classList.add('is-expanded')); }
+function collapseAll()     { document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('is-expanded')); }
+
+function filterCat(cat, btn) {
+    activeCat = cat;
+    document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
+    btn.classList.add(`active-${cat}`);
+    renderizarKpis();
+}
+
+function voltarParaIndex() { window.location.href = 'index.html'; }
+
+function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

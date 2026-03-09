@@ -1,0 +1,370 @@
+/* ================================================
+   INDEX.CSS — Login e tela de seleção de perfis
+   ================================================ */
+
+/* ── Layout da página ── */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-image:
+        radial-gradient(ellipse 60% 50% at 50% -20%, rgba(99, 102, 241, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+}
+
+/* ════════════════════════════════════════════════
+   LOGIN
+   ════════════════════════════════════════════════ */
+.login-wrap {
+    width: 100%;
+    max-width: 400px;
+    animation: fadeUp 0.4s ease both;
+}
+
+/* Logo */
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.login-logo .logo-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: white;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+}
+
+.login-logo-text h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.login-logo-text span {
+    font-size: 0.78rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+}
+
+/* Card de login */
+.login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+.login-card h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+
+.login-card > p {
+    font-size: 0.88rem;
+    color: var(--text2);
+    margin-bottom: 28px;
+}
+
+/* Campos */
+.field {
+    margin-bottom: 18px;
+}
+
+.field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.field input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.field input::placeholder { color: var(--text3); }
+
+/* Botão de login */
+.login-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    margin-top: 8px;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.45);
+}
+
+.login-btn:active { transform: translateY(0); }
+
+/* Mensagem de erro */
+.error-msg {
+    background: rgba(220, 38, 38, 0.12);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    color: #f87171;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 14px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.error-msg.show { display: flex; }
+
+/* ════════════════════════════════════════════════
+   TELA DE PERFIS
+   ════════════════════════════════════════════════ */
+.profiles-wrap {
+    width: 100%;
+    max-width: 1400px;
+    animation: fadeUp 0.4s ease both;
+}
+
+/* Topbar */
+.profiles-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+}
+
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.user-pill-info { line-height: 1.3; }
+.user-pill-info strong { font-size: 0.95rem; font-weight: 600; }
+.user-pill-info span  { display: block; font-size: 0.75rem; color: var(--text3); }
+
+/* Badge de tipo de usuário */
+.user-badge {
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-admin { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; }
+.badge-user  { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; }
+
+/* Botão de logout */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.logout-btn:hover { color: #f87171; border-color: rgba(220, 38, 38, 0.3); }
+
+/* Título dos perfis */
+.profiles-heading { margin-bottom: 28px; }
+
+.profiles-heading h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.profiles-heading p {
+    color: var(--text2);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+/* Aviso de acesso restrito */
+.notice-bar {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+/* ── Grid de perfis ── */
+.profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+}
+
+/* Card de perfil */
+.profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 16px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-glow, rgba(99, 102, 241, 0.06));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.profile-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.profile-card:hover::after { opacity: 1; }
+
+/* Ícone do card */
+.card-icon-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.card-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+}
+
+.card-role {
+    font-size: 0.75rem;
+    color: var(--text3);
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.card-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+/* Estrela de "seu perfil" */
+.card-own-star {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+/* ── Cores por tipo de perfil ── */
+.type-assistente-adm            { --card-glow: rgba(99, 102, 241, 0.08); }
+.type-especialista-processo     { --card-glow: rgba(236, 72, 153, 0.08); }
+.type-supervisor                { --card-glow: rgba(6, 182, 212, 0.08);  }
+.type-especialista-manutencao   { --card-glow: rgba(16, 185, 129, 0.08); }
+
+.type-assistente-adm .card-icon-wrap          { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+.type-especialista-processo .card-icon-wrap   { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+.type-supervisor .card-icon-wrap              { background: rgba(6, 182, 212, 0.15);  color: #22d3ee; }
+.type-especialista-manutencao .card-icon-wrap { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+.type-assistente-adm .card-badge          { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+.type-especialista-processo .card-badge   { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+.type-supervisor .card-badge              { background: rgba(6, 182, 212, 0.15);  color: #22d3ee; }
+.type-especialista-manutencao .card-badge { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .login-card { padding: 28px 20px; }
+    .profiles-grid { grid-template-columns: repeat(2, 1fr); }
+    .profiles-topbar { flex-direction: column; align-items: flex-start; }
+}
